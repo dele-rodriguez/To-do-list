@@ -99,10 +99,11 @@ app.post("/", (req, res) => {
 app.post("/delete" , (req , res) => {
   const checkedItemId = req.body.checkbox;
   const listName = req.body.listName;
-
-  if (listName === "today") {
+  console.log("itemid: " + checkedItemId);
+  // console.log(listName);
+  if (listName.toLowerCase() === "today") {
     Item.findByIdAndRemove(checkedItemId)
-    .then (() => {
+    .then ((foundItem) => {
       console.log("deleted successfully!");
       res.redirect("/");
     })
@@ -122,6 +123,12 @@ app.post("/delete" , (req , res) => {
 
 app.get("/:customListName" , (req , res) => {
   const customListName = _.capitalize(req.params.customListName);
+  // console.log(customListName);
+
+  if (customListName === "Today") { // add this condition
+    res.redirect("/"); // redirect to the default route
+    return; // exit the function
+  }
 
   List.findOne({name: customListName})
     .then((foundList) => {
